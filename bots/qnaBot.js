@@ -16,11 +16,15 @@ class QnABot extends ActivityHandler {
      * @param {Dialog} dialog
      */
     constructor(conversationState, userState, dialog,myStorage) {
+
         super();
         this.storage = myStorage;
+
+        var uniqueId = Date.now().toString();
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         
-        
+        console.log(userState);
+        console.log(myStorage);
 
 
         if (!conversationState) throw new Error('[QnABot]: Missing parameter. conversationState is required');
@@ -42,11 +46,10 @@ class QnABot extends ActivityHandler {
             await next();
             
             // Save updated utterance inputs.
-            // await logMessageText(this.storage, context);
+            await logMessageText(this.storage, context,uniqueId);
         });
 
-        this.onConversationUpdate(async turnContext => { console.log('this gets called (conversation update)');
-        await turnContext.sendActivity('Welcome, enter an item to save to your list.'); });
+        
 
         // If a new user is added to the conversation, send them a greeting message
         this.onMembersAdded(async (context, next) => {
@@ -60,6 +63,9 @@ class QnABot extends ActivityHandler {
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
+
+        this.onConversationUpdate(async turnContext => { console.log('this gets called (conversation update)');
+        await turnContext.sendActivity('Welcome to the QnA Maker sample! Ask me a question and I will try to answer it.'); });
     }
 
     /**
@@ -82,40 +88,45 @@ const restify = require('restify');
 
 
 // This function stores new user messages. Creates new utterance log if none exists.
-async function logMessageText(storage, turnContext) {
+async function logMessageText(storage, turnContext,uniqueId) {
     let utterance = turnContext.activity.text;
     // debugger;
     try {
         // Read from the storage.
-        let storeItems = await storage.read(["UtteranceLogJS"])
+        var UtteranceLogJS1= uniqueId
+        let storeItems = await storage.read([uniqueId])
+		
         // Check the result.
-        var UtteranceLogJS = storeItems["UtteranceLogJS"];
-        if (typeof (UtteranceLogJS) != 'undefined') {
+        var uniqueIdhell = storeItems[uniqueId];
+        if (typeof (uniqueIdhell) != 'undefined') {
             // The log exists so we can write to it.
-            storeItems["UtteranceLogJS"].turnNumber++;
-            storeItems["UtteranceLogJS"].UtteranceList.push(utterance);
+            console.log(storeItems[uniqueId]);
+
+            storeItems[uniqueId].turnNumber++;
+            storeItems[uniqueId].UtteranceList.push(utterance);
             // Gather info for user message.
-            var storedString = storeItems.UtteranceLogJS.UtteranceList.toString();
-            var numStored = storeItems.UtteranceLogJS.turnNumber;
+            var storedString = storeItems[uniqueId].UtteranceList.toString();
+            var numStored = storeItems[uniqueId].turnNumber;
 
             try {
                 await storage.write(storeItems)
-                await turnContext.sendActivity(`${numStored}: The list is now: ${storedString}`);
+               // await turnContext.sendActivity(`${numStored}: The list is now: ${storedString}`);
             } catch (err) {
                 await turnContext.sendActivity(`Write failed of UtteranceLogJS: ${err}`);
             }
         }
         else{
-            await turnContext.sendActivity(`Creating and saving new utterance log`);
+            //await turnContext.sendActivity(`Creating and saving new utterance log`);
             var turnNumber = 1;
-            storeItems["UtteranceLogJS"] = { UtteranceList: [`${utterance}`], "eTag": "*", turnNumber }
+            storeItems[uniqueId] = { UtteranceList: [`${utterance}`], "eTag": "*", turnNumber }
+
             // Gather info for user message.
-            var storedString = storeItems.UtteranceLogJS.UtteranceList.toString();
-            var numStored = storeItems.UtteranceLogJS.turnNumber;
+            var storedString = storeItems[uniqueId].UtteranceList.toString();
+            var numStored = storeItems[uniqueId].turnNumber;
 
             try {
                 await storage.write(storeItems)
-                await turnContext.sendActivity(`${numStored}: The list is now: ${storedString}`);
+                //await turnContext.sendActivity(`${numStored}: The list is now: ${storedString}`);
             } catch (err) {
                 await turnContext.sendActivity(`Write failed: ${err}`);
             }
