@@ -65,7 +65,8 @@ class QnABot extends ActivityHandler {
         });
 
         this.onConversationUpdate(async turnContext => { console.log('this gets called (conversation update)');
-        await turnContext.sendActivity('Welcome to the QnA Maker sample! Ask me a question and I will try to answer it.'); });
+        await turnContext.sendActivity('Welcome to the QnA Maker sample! Ask me a question and I will try to answer it.'); 
+        uniqueId = Date.now().toString();});
     }
 
     /**
@@ -92,6 +93,8 @@ async function logMessageText(storage, turnContext,uniqueId) {
     let utterance = turnContext.activity.text;
     // debugger;
     try {
+
+        console.log(uniqueId);
         // Read from the storage.
         var UtteranceLogJS1= uniqueId
         let storeItems = await storage.read([uniqueId])
