@@ -56,7 +56,7 @@ class QnABot extends ActivityHandler {
             const membersAdded = context.activity.membersAdded;
             for (let cnt = 0; cnt < membersAdded.length; cnt++) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
-                    await context.sendActivity('Welcome to the QnA Maker sample! Ask me a question and I will try to answer it.');
+                    await context.sendActivity('Stress Calcualtor Survey Bot is actictivated. Please Type Hi to start the survey');
                 }
             }
 
@@ -65,7 +65,7 @@ class QnABot extends ActivityHandler {
         });
 
         this.onConversationUpdate(async turnContext => { console.log('this gets called (conversation update)');
-        await turnContext.sendActivity('Welcome to the QnA Maker sample! Ask me a question and I will try to answer it.'); 
+        await turnContext.sendActivity('Stress Calcualtor Survey Bot is actictivated. Please Type Hi to start the survey'); 
         uniqueId = Date.now().toString();});
     }
 
@@ -94,7 +94,6 @@ async function logMessageText(storage, turnContext,uniqueId) {
     // debugger;
     try {
 
-        console.log(uniqueId);
         // Read from the storage.
         var UtteranceLogJS1= uniqueId
         let storeItems = await storage.read([uniqueId])
@@ -105,27 +104,42 @@ async function logMessageText(storage, turnContext,uniqueId) {
             // The log exists so we can write to it.
             console.log(storeItems[uniqueId]);
 
-            storeItems[uniqueId].turnNumber++;
+            if(utterance == "Almost Never"){
+                storeItems[uniqueId].stressScore=storeItems[uniqueId].stressScore+1
+            }
+            else if( utterance == "Sometimes"){
+                storeItems[uniqueId].stressScore=storeItems[uniqueId].stressScore+2
+            }
+            else if (utterance == "Fairly Often"){
+                storeItems[uniqueId].stressScore=storeItems[uniqueId].stressScore+3
+            }
+            else if (utterance == "Very Often"){
+                storeItems[uniqueId].stressScore=storeItems[uniqueId].stressScore+4
+            }
+
+            //storeItems[uniqueId].stressScore++;
             storeItems[uniqueId].UtteranceList.push(utterance);
             // Gather info for user message.
             var storedString = storeItems[uniqueId].UtteranceList.toString();
-            var numStored = storeItems[uniqueId].turnNumber;
+            var numStored = storeItems[uniqueId].stressScore;
 
             try {
                 await storage.write(storeItems)
-               // await turnContext.sendActivity(`${numStored}: The list is now: ${storedString}`);
+                if (utterance=="Get the Stress Score"){
+                    await turnContext.sendActivity(`Stress Score Till Now: ${numStored}`);
+                }
             } catch (err) {
                 await turnContext.sendActivity(`Write failed of UtteranceLogJS: ${err}`);
             }
         }
         else{
             //await turnContext.sendActivity(`Creating and saving new utterance log`);
-            var turnNumber = 1;
-            storeItems[uniqueId] = { UtteranceList: [`${utterance}`], "eTag": "*", turnNumber }
+            var stressScore = 0;
+            storeItems[uniqueId] = { UtteranceList: [`${utterance}`], "eTag": "*", stressScore }
 
             // Gather info for user message.
             var storedString = storeItems[uniqueId].UtteranceList.toString();
-            var numStored = storeItems[uniqueId].turnNumber;
+            var numStored = storeItems[uniqueId].stressScore;
 
             try {
                 await storage.write(storeItems)
