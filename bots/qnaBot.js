@@ -126,7 +126,16 @@ async function logMessageText(storage, turnContext,uniqueId) {
             try {
                 await storage.write(storeItems)
                 if (utterance=="Get the Stress Score"){
-                    await turnContext.sendActivity(`Stress Score Till Now: ${numStored}`);
+                    await turnContext.sendActivity(`${numStored}/40`);
+                    if (numStored >= 20){
+                        await turnContext.sendActivity(`Your are having High psychological stress which will result in any of the following and then lead to cardiovascular disease:\n1.High blood pressure\n2.Higher BMI\n3.larger waist to hip ratio\n4.Shorter telomere length\n5.Higher cortisol levels\n6.Suppressed immune function\n7.Decreased sleep\n8.Increased alcohol consumption\nYou need to exercise Stress Reduction Techniques for atleast 3 times a week.`);
+                    }
+                    else if ((numStored>13) & (numStored<20)){
+                        await turnContext.sendActivity(`You are nearing the High psychological stress Level.\nPlease exercise Stress Reduction Techniques for atleast once times a week`);
+                    }
+                    else{
+                        await turnContext.sendActivity(`You are Psychological stress Level is under control.\nPlease exercise Stress Reduction Techniques for atleast once times a month for better score`);
+                    }
                 }
             } catch (err) {
                 await turnContext.sendActivity(`Write failed of UtteranceLogJS: ${err}`);
