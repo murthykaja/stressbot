@@ -1,27 +1,17 @@
-# QnA Maker
+# Azure Stress Calculator Survery Bot
 
 Bot Framework v4 QnA Maker bot sample. This sample shows how to integrate Multiturn and Active learning in a QnA Maker bot with ASP.Net Core-2. Click [here][72] to know more about using follow-up prompts to create multiturn conversation. To know more about how to enable and use active learning, click [here][71].
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a bot that uses the [QnA Maker Cognitive AI](https://www.qnamaker.ai) service.
+The bot is a customized version of a bot which has been created using [Bot Framework](https://dev.botframework.com). We have also used the [QnA Maker Service](https://www.qnamaker.ai) which enables us to build, train and publish a simple question and answer bot based on structured documents
 
-The [QnA Maker Service](https://www.qnamaker.ai) enables you to build, train and publish a simple question and answer bot based on FAQ URLs, structured documents or editorial content in minutes. In this sample, we demonstrate how to use the QnA Maker service to answer questions based on a FAQ text file used as input.
+## Concepts
+- Azure Bot service and code design
+- Azure Blob Service and linking to bot for storage of user response
+- The [QnA Maker Service][19] to build, train and publish a simple question and answer bot structured documents.
+    *The Active Learning to generate suggestions for knowledge base.
+    *Use the Multiturn experience for the knowledge base .
 
-## Concepts introduced in this sample
-The [QnA Maker Service][19] enables you to build, train and publish a simple question and answer bot based on FAQ URLs, structured documents or editorial content in minutes.
-In this sample, we demonstrate 
--.how to use the Active Learning to generate suggestions for knowledge base.
--.how to use the Multiturn experience for the knowledge base .
-
-# Prerequisites
-`- Follow instructions` [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/set-up-qnamaker-service-azure) to create a QnA Maker service.
-- Follow instructions [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/multiturn-conversation) to create multiturn experience.
-- Follow instructions [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/quickstarts/create-publish-knowledge-base) to import and publish your newly created QnA Maker service.
-- Update [appsettings.json](appsettings.json) with your kbid (KnowledgeBase Id), endpointKey and endpointHost. QnA knowledge base setup and application configuration steps can be found [here](https://aka.ms/qna-instructions).
-- (Optional) Follow instructions [here](https://github.com/Microsoft/botbuilder-tools/tree/master/packages/QnAMaker) to set up the
-QnA Maker CLI to deploy the model.
-### Create a QnAMaker Application to enable QnA Knowledge Bases
-
-QnA knowledge base setup and application configuration steps can be found [here](https://aka.ms/qna-instructions).
+# Steps followed to develop the bot
 
 # Configure Cognitive Service Model
 - Create a Knowledge Base in QnAMaker Portal.
@@ -35,83 +25,13 @@ QnA knowledge base setup and application configuration steps can be found [here]
 - Use value of "QnAAuthKey" for setting "QnAEndpointKey".
 - Capture KnowledgeBase Id, HostName and EndpointKey current published app 
 
-# Try Active Learning
-- Once your QnA Maker service is up and you have published the sample KB, try the following queries to trigger the Train API on the bot.
-- Sample query: "light"
-- You can observe that, Multiple answers are returned with high score.
 
-# Try Multi-turn prompt
+# USe Multi-turn prompt
 - Once your QnA Maker service is up and you have published the sample KB, try the following queries to trigger the Train API on the bot.
 - Sample query: "won't turn on"
 - You can notice a prompt, included as part of  answer to query.
 
 
-### Overview
-
-This bot uses [QnA Maker Service](https://www.qnamaker.ai), an AI based cognitive service, to implement simple Question and Answer conversational patterns.
-
-- [Node.js](https://nodejs.org) version 10.14 or higher
-
-    ```bash
-    # determine node version
-    node --version
-    ```
-
-## To try this sample
-
-- Clone the repository
-
-    ```bash
-    git clone https://github.com/microsoft/botbuilder-samples.git
-    ```
-
-- In a terminal, navigate to `samples/javascript_nodejs/49.qnamaker-all-features`
-
-    ```bash
-    cd samples/javascript_nodejs/49.qnamaker-all-features
-    ```
-
-- Install modules
-
-    ```bash
-    npm install
-    ```
-
-- Setup QnAMaker
-
-    The prerequisite outlined above contain the steps necessary to provision a QnA Knowledge Base on www.qnamaker.ai.  Refer to [Use QnA Maker to answer questions][41] for directions to setup and configure QnAMaker.
-
-- Run the sample
-
-    ```bash
-    npm start
-    ```
-##### Microsoft Teams channel group chat fix
-- Goto `dialog/rootDialog.js`
-- Add reference
-    ~~~
-    const {
-        TurnContext
-    } = require('botbuilder-core');
-    ~~~
-- Update `run` function as
-    ~~~
-    async run(context, accessor) {
-        const dialogSet = new DialogSet(accessor);
-        dialogSet.add(this);
-
-        const dialogContext = await dialogSet.createContext(context);
-
-        if (context.activity.channelId === "msteams") {
-            context.activity.text = TurnContext.removeRecipientMention(context.request);
-        }
-
-        const results = await dialogContext.continueDialog();
-        if (results.status === DialogTurnStatus.empty) {
-            await dialogContext.beginDialog(this.id);
-        }
-    }
-    ~~~
 
 ## Testing the bot using Bot Framework Emulator
 
@@ -124,16 +44,12 @@ This bot uses [QnA Maker Service](https://www.qnamaker.ai), an AI based cognitiv
 - Launch Bot Framework Emulator
 - File -> Open Bot
 - Enter a Bot URL of `http://localhost:3999/api/messages`
+- Give Microsoft ID and password from .env file
 
 # QnA Maker service
-QnA Maker enables you to power a question and answer service from your semi-structured content.
+We have used Qna maker srevice to form questions and design the flow of survey. Generally Qna maker is used to answer the questions from user. But here we have used qna maker multi turn concept to navigate though the questions on the survey and record answers. A total of 
 
-One of the basic requirements in writing your own bot is to seed it with questions and answers. In many cases, the questions and answers already exist in content like FAQ URLs/documents, product manuals, etc. With QnA Maker, users can query your application in a natural, conversational manner. QnA Maker uses machine learning to extract relevant question-answer pairs from your content. It also uses powerful matching and ranking algorithms to provide the best possible match between the user query and the questions.
-
-# Deploy the bot to Azure
-To learn more about deploying a bot to Azure, see [Deploy your bot to Azure][40] for a complete list of deployment instructions.
-
-# Further reading
+# Learing Sorces
 - [Bot Framework Documentation][20]
 - [Bot Basics][32]
 - [QnA Maker Documentation][23]
