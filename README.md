@@ -11,7 +11,19 @@ The bot is a customized version of a bot which has been created using [Bot Frame
     *The Active Learning to generate suggestions for knowledge base.
     *Use the Multiturn experience for the knowledge base .
 
-# Steps followed to develop the bot
+# Architecture
+![image](https://user-images.githubusercontent.com/84783754/120978602-47e0ce80-c792-11eb-8415-26cde484156e.png)
+![image](https://user-images.githubusercontent.com/84783754/120979101-dbb29a80-c792-11eb-9053-0d1f78021b1a.png)
+
+
+# Technical Details
+- Azure Bot services – For creation of the Chatbot
+- QnA Maker Service- For creation of the questionnaire posted via Chatbot
+- Azure blob Storage- For storing user response as a blob
+- Survey – Either hosted via web or through Telegram app.
+- Bot Framework Emulator 4.13.0
+- ngrok 2.0
+
 
 # Configure Cognitive Service Model
 - Create a Knowledge Base in QnAMaker Portal.
@@ -26,7 +38,7 @@ The bot is a customized version of a bot which has been created using [Bot Frame
 - Capture KnowledgeBase Id, HostName and EndpointKey current published app 
 
 
-# USe Multi-turn prompt
+# Use Multi-turn prompt
 - Once your QnA Maker service is up and you have published the sample KB, try the following queries to trigger the Train API on the bot.
 - Sample query: "won't turn on"
 - You can notice a prompt, included as part of  answer to query.
@@ -47,7 +59,11 @@ The bot is a customized version of a bot which has been created using [Bot Frame
 - Give Microsoft ID and password from .env file
 
 # QnA Maker service
-We have used Qna maker srevice to form questions and design the flow of survey. Generally Qna maker is used to answer the questions from user. But here we have used qna maker multi turn concept to navigate though the questions on the survey and record answers. A total of 
+We have used Qna maker srevice to form questions and design the flow of survey. Generally Qna maker is used to answer the questions from user. But here we have used qna maker multi turn concept to navigate though the questions on the survey and record answers. 
+
+# Telegram Link to access the bot:
+
+http://t.me/StressCalulatorBot
 
 # Learing Sorces
 - [Bot Framework Documentation][20]
